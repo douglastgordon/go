@@ -1,7 +1,7 @@
 class Board
 
   def initialize(size)
-    @grid = Array.new(size){Array.new(size)}
+    @grid = Array.new(size, " "){Array.new(size, " ")}
   end
 
   def display
@@ -15,8 +15,10 @@ class Board
     end
   end
 
+  def place_move(pos, token)
+    pos = pos.split(" ").map{|el| el.to_i}
+    @grid[pos[0]][pos[1]] = token
+  end
+
+
 end
-
-
-board = Board.new(9)
-board.display
