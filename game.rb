@@ -1,22 +1,25 @@
 require_relative 'board.rb'
+require_relative 'player.rb'
 
 class Game
 
-  def initialize(player1, player2, board_size)
+  HANDICAP = 5.5
+
+  def initialize(name1, name2, board_size)
     @board_size = board_size
-    @player1, @player2 = player1, player2
-    @current_player = player1
+    @player1, @player2 = Player.new(name1, 0, "X"), Player.new(name1, HANDICAP, "O")
+    @current_player = @player1
     @board = Board.new(board_size)
   end
 
   def play
     until game_over?
-      puts "It's #{@current_player}'s turn"
+      puts "It's #{@current_player.name}'s turn"
       @board.display
       puts "Enter move (e.g. '3 1'):"
       move = gets.chomp
-      @board.place_move(move, @current_player)
-      @current_player == @player1 ? @current_player = @player2 : @current_player = @player1
+      @board.place_move(move, @current_player.token)
+      switch_current_player
     end
   end
 
@@ -26,6 +29,14 @@ class Game
 
 
   private
+
+  def switch_current_player
+    if @current_player == @player1
+       @current_player = @player2
+    else
+      @current_player = @player1
+    end
+  end
 
   def neighboring_cells(x, y)
     neighbors = {
@@ -76,5 +87,5 @@ class Game
 end
 
 
-game = Game.new("X", "O", 9)
+game = Game.new("John", "Jane", 9)
 game.play
