@@ -16,15 +16,34 @@ class Game
     until game_over?
       puts "It's #{@current_player.name}'s turn"
       @board.display
-      puts "Enter move (e.g. '3 1'):"
-      move = gets.chomp
-      @board.place_move(move, @current_player.token)
+      move = nil
+      until legal_move?(move)
+        puts "Enter move (e.g. '3 1'):"
+        move = gets.chomp
+      end
+        @board.place_move(move, @current_player.token)
       switch_current_player
     end
   end
 
   def game_over?
     false
+  end
+
+  def legal_move?(move)
+    return false if move.nil?
+    move = move.split(" ").map{|el| el.to_i}
+    if move.length != 2 ||
+       out_of_bounds?(move) ||
+       @board.grid[move[0]][move[1]] != " "
+        return false
+    end
+    true
+  end
+
+
+
+  def find_groups
   end
 
 
@@ -36,6 +55,16 @@ class Game
     else
       @current_player = @player1
     end
+  end
+
+  def all_coordinates
+    coords = []
+    (0..@board_size).each do |x|
+      (0..@board_size).each do |y|
+        coords << [x, y]
+      end
+    end
+    coords
   end
 
   def neighboring_cells(x, y)
@@ -77,7 +106,7 @@ class Game
   end
 
   def friendly?(coords)
-    @board.grid[coords[0]][coords[1]] == @current_player
+    @board.grid[coords[0]][coords[1]] == @current_player.token
   end
 
   def blank?(coords)
