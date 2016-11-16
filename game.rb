@@ -44,10 +44,42 @@ class Game
 
 
   def find_groups
+    tokens = token_coords
+    groups = []
+    token_coords.each do |token_coord|
+      groups.each do |group|
+        if belongs_to_group?(token_coord, group)
+          group << token_coord
+        else
+          groups << token_coord
+        end
+      end
+    end
+    groups
   end
 
 
+
+
   private
+
+  def belongs_to_group(token_coord, group)
+    group.each do |token|
+      return true if bordering?(token_coord, token)
+    end
+    false
+  end
+
+  def bordering?(coord1, coord2)
+    if coord1[0] == coord2[0] &&
+      (coord1[1] - coord2[1]).abs == 1
+      return true
+    elsif coord1[1] == coord2[1] &&
+      (coord1[0] - coord2[0]).abs == 1
+      return true
+    end
+      false
+  end
 
   def switch_current_player
     if @current_player == @player1
@@ -65,6 +97,16 @@ class Game
       end
     end
     coords
+  end
+
+  def token_coords
+    token_coords = []
+    all_coordinates.each do |coords|
+      if @board.grid[coords[0]][coords[1]] != " "
+        token_coords << coords
+      end
+    end
+    token_coords
   end
 
   def neighboring_cells(x, y)
