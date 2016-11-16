@@ -7,7 +7,22 @@ class Board
   end
 
   def display
-    puts "  0 1 2 3 4 5 6 7 8"
+
+    print "  "
+    @grid.each_index do |i|
+      if i/10 != 0
+        print "#{i/10} "
+      else
+        print "  "
+      end
+    end
+    puts
+
+    print "  "
+    @grid.each_index do |i|
+      print "#{i%10} "
+    end
+    puts
     @grid.each_with_index do |line, i|
       print "#{i} "
       line.each do |cell|

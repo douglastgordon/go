@@ -4,6 +4,7 @@ require 'byebug'
 class Game
 
   HANDICAP = 5.5
+  $pass_count = 0
 
   def initialize(name1, name2, board_size)
     @board_size = board_size
@@ -18,13 +19,19 @@ class Game
       @board.display
       move = nil
       until legal_move?(move)
-        puts "Enter move (e.g. '3 1'):"
+        puts "Enter move (e.g. '3 1') or 'pass':"
         move = gets.chomp
       end
-      @board.place_move(move, @current_player.token)
+       unless move == "pass"
+         @board.place_move(move, @current_player.token)
+         $pass_count = 0
+       else
+         $pass_count += 1
+       end
       kill_dead_groups
       switch_current_player
     end
+    puts "Game Over!"
   end
 
   def stats
@@ -36,10 +43,15 @@ class Game
   end
 
   def game_over?
-    false
+    if $pass_count == 2
+      return true
+    else
+      false
+    end
   end
 
   def legal_move?(move)
+    return true if move == "pass"
     return false if move.nil?
     move = move.split(" ").map{|el| el.to_i}
     if move.length != 2 ||
@@ -66,7 +78,6 @@ class Game
       groups << [token_coord] if accounted_for == false
 
     end
-    debugger
     groups
   end
 
@@ -196,5 +207,12 @@ class Game
 end
 
 
-game = Game.new("John", "Jane", 9)
+
+puts "Enter player1's name: "
+name1 = gets.chomp
+puts "Enter player2's name: "
+name2 = gets.chomp
+puts "Enter board size (19, 13 or 9 is recommended):"
+size = gets.chomp.to_i
+game = Game.new(name1, name2, size)
 game.play
