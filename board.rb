@@ -1,7 +1,7 @@
 class Board
 
   attr_accessor :grid
-  
+
   def initialize(size)
     @grid = Array.new(size, " "){Array.new(size, " ")}
   end
@@ -20,6 +20,16 @@ class Board
   def place_move(pos, token)
     pos = pos.split(" ").map{|el| el.to_i}
     @grid[pos[0]][pos[1]] = token
+  end
+
+  def delete_cell(coord)
+    @grid[coord[0]][coord[1]] = " "
+  end
+
+  def delete(group)
+    group.each do |coord|
+      delete_cell(coord)
+    end
   end
 
 
