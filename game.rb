@@ -32,7 +32,7 @@ class Game
       "edge" => 0,
       "friendly" => 0,
       "enemy" => 0,
-      "empty" => 0
+      "blank" => 0
     }
     neighbor_coords = [
       [x-1, y],
@@ -51,6 +51,8 @@ class Game
       return "edge"
     elsif friendly?(coords)
       return "friendly"
+    elsif blank?(coords)
+      return "blank"
     else
       "enemy"
     end
@@ -65,6 +67,10 @@ class Game
 
   def friendly?(coords)
     @board.grid[coords[0]][coords[1]] == @current_player
+  end
+
+  def blank?(coords)
+    @board.grid[coords[0]][coords[1]] == " "
   end
 
 end
