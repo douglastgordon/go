@@ -1,6 +1,6 @@
 require_relative 'board.rb'
 require_relative 'player.rb'
-
+require 'byebug'
 class Game
 
   HANDICAP = 5.5
@@ -48,14 +48,17 @@ class Game
     tokens = token_coords
     groups = []
     token_coords.each do |token_coord|
+      accounted_for = false
       groups.each do |group|
         if belongs_to_group?(token_coord, group)
           group << token_coord
-        else
-          groups << token_coord
+          accounted_for = true
         end
       end
+      groups << token_coord if accounted_for == false
+
     end
+
     groups
   end
 
@@ -68,7 +71,7 @@ class Game
     end
   end
 
-  def surrounded(group)
+  def surrounded?(group)
     group.each do |cell|
       neighbors = neighboring_cells(cell[0], cell[1])
       return false if neighbors["blank"] >= 1
@@ -80,7 +83,7 @@ class Game
 
   private
 
-  def belongs_to_group(token_coord, group)
+  def belongs_to_group?(token_coord, group)
     group.each do |token|
       return true if bordering?(token_coord, token)
     end
@@ -108,8 +111,8 @@ class Game
 
   def all_coordinates
     coords = []
-    (0..@board_size).each do |x|
-      (0..@board_size).each do |y|
+    (0...@board_size).each do |x|
+      (0...@board_size).each do |y|
         coords << [x, y]
       end
     end
