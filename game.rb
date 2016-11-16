@@ -57,16 +57,16 @@ class Game
     groups = []
     token_coords.each do |token_coord|
       accounted_for = false
-      groups.each do |group|
+      groups.each_with_index do |group, i|
         if belongs_to_group?(token_coord, group)
-          group << token_coord
           accounted_for = true
+          groups[i] += [token_coord]
         end
       end
-      groups << token_coord if accounted_for == false
+      groups << [token_coord] if accounted_for == false
 
     end
-
+    debugger
     groups
   end
 
@@ -75,7 +75,16 @@ class Game
     groups.each do |group|
       if surrounded?(group)
         @board.delete(group)
+        update_score(group)
       end
+    end
+  end
+
+  def update_score(group)
+    if @board.grid[group[0][0]][group[0][1]] == @player1.token
+      @player2.score += group.length
+    else
+      @player1.score += group.length
     end
   end
 
@@ -91,7 +100,10 @@ class Game
 
   def belongs_to_group?(token_coord, group)
     group.each do |token|
-      return true if bordering?(token_coord, token)
+      if bordering?(token_coord, token) &&
+        @board.grid[token_coord[0]][token_coord[1]] == @board.grid[token[0]][token[1]]
+        return true
+      end
     end
     false
   end
