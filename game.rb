@@ -7,14 +7,14 @@ class Game
 
   def initialize(name1, name2, board_size)
     @board_size = board_size
-    @player1, @player2 = Player.new(name1, 0, "X"), Player.new(name1, HANDICAP, "O")
+    @player1, @player2 = Player.new(name1, 0, "\u25cf".encode('utf-8')), Player.new(name2, HANDICAP, "\u25ef".encode('utf-8'))
     @current_player = @player1
     @board = Board.new(board_size)
   end
 
   def play
     until game_over?
-      puts "It's #{@current_player.name}'s turn"
+      stats
       @board.display
       move = nil
       until legal_move?(move)
@@ -25,6 +25,14 @@ class Game
       kill_dead_groups
       switch_current_player
     end
+  end
+
+  def stats
+    puts "-----------------------------------"
+    puts "Score: #{@player1.name}: #{@player1.score} - #{@player2.name}: #{@player2.score}"
+    puts
+    puts "It's #{@current_player.name}'s turn:"
+    puts
   end
 
   def game_over?
@@ -78,8 +86,6 @@ class Game
     end
     true
   end
-
-
 
   private
 
