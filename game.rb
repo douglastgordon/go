@@ -21,7 +21,8 @@ class Game
         puts "Enter move (e.g. '3 1'):"
         move = gets.chomp
       end
-        @board.place_move(move, @current_player.token)
+      @board.place_move(move, @current_player.token)
+      kill_dead_groups
       switch_current_player
     end
   end
@@ -58,6 +59,22 @@ class Game
     groups
   end
 
+  def kill_dead_groups
+    groups = find_groups
+    groups.each do |group|
+      if surrounded?(group)
+        @board.delete(group)
+      end
+    end
+  end
+
+  def surrounded(group)
+    group.each do |cell|
+      neighbors = neighboring_cells(cell[0], cell[1])
+      return false if neighbors["blank"] >= 1
+    end
+    true
+  end
 
 
 
